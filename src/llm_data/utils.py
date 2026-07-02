@@ -1,7 +1,7 @@
-import math
-from daft import DataType
 from pathlib import Path
 from typing import Literal
+
+from daft import DataType
 
 
 def checkpoint_uri(path: str) -> str:

@@ -1,6 +1,8 @@
-import daft
-from daft import CheckpointStore, CheckpointConfig, KeyFilteringSettings
 from typing import Optional
+
+import daft
+from daft import CheckpointConfig, CheckpointStore, KeyFilteringSettings
+
 from llm_data.utils import checkpoint_uri
 
 daft.set_runner_ray()

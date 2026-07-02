@@ -1,8 +1,10 @@
+from dataclasses import dataclass
+
 import daft
 from daft import DataFrame, col
 from magic_html import GeneralExtractor
-from trafilatura import extract
 from resiliparse.extract.html2text import extract_plain_text
+from trafilatura import extract
 
 
 @daft.func
@@ -20,16 +22,13 @@ def resiliparse_extract(html: str) -> str:
     return extract_plain_text(html)
 
 
+@dataclass
 class ParseHtml:
-    def __init__(
-        self,
-        input_column: str = "html",
-        output_column: str = "text",
-        parser_type="resiliparse",
-    ):
-        self.input_column = input_column
-        self.output_column = output_column
-        self.parser_type = parser_type
+    input_column: str = "html"
+    output_column: str = "text"
+    parser_type = "resiliparse"
+
+    name: str = "ParseHtml"
 
     def __call__(self, df: DataFrame) -> DataFrame:
         if self.parser_type == "resiliparse":

@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional
+
 from daft import DataFrame, col
+
 
 def embedding_factory(
     *,
@@ -15,6 +17,7 @@ def embedding_factory(
 ):
     import daft
     from daft import DataType, Series
+
     from llm_data.utils import daft_dtype
 
     dtype = daft_dtype(precision=precision)
