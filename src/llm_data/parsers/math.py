@@ -103,4 +103,4 @@ class ParseMath:
             )
         else:
             raise ValueError(f"Extractor not available: {self.extractor_type}")
-        return df
+        return df.exclude("cleaned_html")
