@@ -26,7 +26,7 @@ def resiliparse_extract(html: str) -> str:
 class ParseHtml:
     input_column: str = "html"
     output_column: str = "text"
-    parser_type = "resiliparse"
+    parser_type: str = "resiliparse"
 
     name: str = "ParseHtml"
 
@@ -41,5 +41,5 @@ class ParseHtml:
                 self.output_column, trafilatura_extract(col(self.input_column))
             )
         else:
-            return ValueError("Selected parser is not available")
+            raise ValueError("Selected parser is not available")
         return df

@@ -5,8 +5,6 @@ from daft import CheckpointConfig, CheckpointStore, KeyFilteringSettings
 
 from llm_data.utils import checkpoint_uri
 
-daft.set_runner_ray()
-
 
 class DataLoader:
     def __init__(
@@ -20,6 +18,7 @@ class DataLoader:
     ):
         self.loader_type = loader_type
         self.file_path_column_name = file_path_column_name
+        self.config = None
 
         if checkpoint_path and checkpoint_on:
             self.checkpoint_path = checkpoint_uri(checkpoint_path)

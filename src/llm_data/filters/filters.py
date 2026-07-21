@@ -5,6 +5,16 @@ from daft.functions import length
 
 
 @dataclass
+class DropNullFilter:
+    input_column: str = "text"
+
+    name: str = "DropNullFilter"
+
+    def __call__(self, df: DataFrame) -> DataFrame:
+        return df.drop_null(col(self.input_column))
+
+
+@dataclass
 class LengthFilter:
     input_column: str = "text"
     max_len: int = 10000
