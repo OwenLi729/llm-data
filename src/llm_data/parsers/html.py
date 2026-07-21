@@ -41,5 +41,5 @@ class ParseHtml:
                 self.output_column, trafilatura_extract(col(self.input_column))
             )
         else:
-            raise ValueError("Selected parser is not available")
+            return ValueError("Selected parser is not available")
         return df

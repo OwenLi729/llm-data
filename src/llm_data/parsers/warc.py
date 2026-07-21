@@ -35,6 +35,8 @@ class NormalizeWarc:
     name: str = "NormalizeWarc"
 
     def __call__(self, df: DataFrame) -> DataFrame:
+        # WARC files also contain requests and metadata records.
+        # Keep page responses, decode their payloads, and normalize their metadata.
         df = select_warc_responses(df, self.limit)
         df = df.with_column("html", decode_warc_content(col("warc_content")))
         df = df.drop_null(col("html"))

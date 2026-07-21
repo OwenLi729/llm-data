@@ -13,13 +13,13 @@ def decode_html(html):
     """
     try:
         html = bytes_to_str(html, "utf-8")
-    except Exception:
+    except Exception as e:
         encoding = detect_encoding(html)
         if encoding is None or encoding == "utf-8":
             return
         try:
             html = bytes_to_str(html, encoding)
-        except Exception:
+        except Exception as e:
             return
     return html
 
