@@ -16,9 +16,6 @@ dependencies = [
     "trafilatura>=2.1.0",
 ]
 
-[project.scripts]
-llm-data-process-warc = "llm_data.cli:main"
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
