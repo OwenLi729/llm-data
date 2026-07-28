@@ -1,11 +1,7 @@
 from typing import Optional
 
 import daft
-from daft import (
-    CheckpointConfig,
-    CheckpointStore,
-    KeyFilteringSettings,
-)
+from daft import CheckpointConfig, CheckpointStore, KeyFilteringSettings
 
 from llm_data.utils import checkpoint_uri
 
