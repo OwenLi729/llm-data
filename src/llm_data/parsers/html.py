@@ -26,7 +26,7 @@ def resiliparse_extract(html: str) -> str:
 class ParseHtml:
     input_column: str = "html"
     output_column: str = "text"
-    parser_type = "resiliparse"
+    parser_type: str = "resiliparse"
 
     name: str = "ParseHtml"
 
