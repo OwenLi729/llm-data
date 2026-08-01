@@ -1,7 +1,7 @@
-import json
 from dataclasses import dataclass
 from typing import Optional
 
+import cysimdjson
 import daft
 from daft import DataFrame, col
 
@@ -13,12 +13,22 @@ def decode_warc_content(content: bytes) -> str:
     return decode_html(content)
 
 
-@daft.func
-def extract_warc_language(headers: str) -> str:
-    try:
-        return json.loads(headers).get("WARC-Identified-Content-Language")
-    except (AttributeError, TypeError, ValueError):
-        return None
+@daft.cls
+class ExtractWarcLanguage:
+    def __init__(self):
+        self.parser = cysimdjson.JSONParser()
+
+    def __call__(self, headers: str) -> str:
+        try:
+            element = self.parser.parse_string(headers)
+            return element.at_pointer("/WARC-Identified-Content-Language")
+        except (AttributeError, KeyError, TypeError, ValueError):
+            return None
+
+
+# Shared UDF handle for ExtractWarcLanguage. @daft.cls defers __init__ until
+# query execution, so import and reuse this instead of constructing new instances.
+extract_warc_language = ExtractWarcLanguage()
 
 
 def select_warc_responses(df: DataFrame, limit: Optional[int] = None) -> DataFrame:

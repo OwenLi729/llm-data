@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "cysimdjson==23.8",
     "daft[ray]>=0.7.16",
     "ftfy>=6.3.1",
     "google-re2>=1.1.20251105",
@@ -17,11 +18,10 @@ dependencies = [
 ]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.9,<0.13"]
+build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
-    "pytest>=9.1.1",
     "ruff>=0.15.22",
 ]
