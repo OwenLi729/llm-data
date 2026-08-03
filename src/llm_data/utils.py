@@ -1,11 +1,12 @@
 from pathlib import Path
 from typing import Literal
 
+import daft
 from daft import DataType
 from resiliparse.parse.encoding import bytes_to_str, detect_encoding
 
-
-def decode_html(html):
+@daft.func
+def decode_html(html: bytes) -> str:
     """
     OpenWebMath: https://arxiv.org/abs/2310.06786
     Decodes the html if possible.
