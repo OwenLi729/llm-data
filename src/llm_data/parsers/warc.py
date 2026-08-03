@@ -40,9 +40,17 @@ class ExtractWarc:
 
 # Retruuns '__label__eng_Latn' for English
 @daft.func
-def language_prediction(txt: str, model_path: str) -> str:
+def language_prediction(txt: str | None, model_path: str) -> str:
+    if txt is None:
+        return ""
+
     model = fasttext.load_model(model_path)
-    return model.predict([txt.replace('\n', ' ').strip()])[0][0][0]
+    one_line = " ".join(txt.splitlines()).strip()
+
+    if len(one_line) == 0:
+        return ""
+
+    return model.predict([one_line], k=1)[0][0][0]
 
 
 # Language extraction with glotlid
