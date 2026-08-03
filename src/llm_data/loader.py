@@ -10,20 +10,25 @@ class DataLoader:
     def __init__(
         self,
         loader_type: str = "parquet",
-        checkpoint_path: Optional[str] = "data_checkpoints",
+        checkpoint_path: Optional[str] = None,
         file_path_column_name: Optional[str] = "source_path",
         checkpoint_on: Optional[str] = "source_path",
         num_workers: Optional[int] = None,
         cpus_per_worker: Optional[float] = None,
         config: Optional[CheckpointConfig] = None,
     ):
+        if config is not None and checkpoint_path is not None:
+            raise ValueError("Pass either `config` or `checkpoint_path`, not both")
+
+        if checkpoint_path is not None and checkpoint_on is None:
+            raise ValueError("`checkpoint_on` is required when `checkpoint_path` is set")
+ 
         self.loader_type = loader_type
         self.file_path_column_name = file_path_column_name
-        self.config = config
-
-        if checkpoint_path and checkpoint_on:
-            self.checkpoint_path = checkpoint_uri(checkpoint_path)
-            self.config = CheckpointConfig(
+        self.checkpoint_path = checkpoint_uri(checkpoint_path) if checkpoint_path else None
+ 
+        if self.checkpoint_path:
+            config = CheckpointConfig(
                 store=CheckpointStore(self.checkpoint_path),
                 on=checkpoint_on,
                 settings=KeyFilteringSettings(
@@ -31,6 +36,7 @@ class DataLoader:
                     cpus_per_worker=cpus_per_worker,
                 ),
             )
+        self.config = config
 
     def read_data(self, input_path: str):
         if self.loader_type == "parquet":
