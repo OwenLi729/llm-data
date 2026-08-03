@@ -1,6 +1,5 @@
 import shutil
 import subprocess
-from dataclasses import dataclass
 
 import daft
 from daft import DataFrame, col
@@ -69,21 +68,28 @@ def w3m_extract(html: str, width: int, timeout: int) -> str:
     )
 
 
-@dataclass
 class ParseMath:
-    input_column: str = "html"
-    output_column: str = "text"
-    timeout: int = 30
-    extractor_type: str = "w3m"
-    width: int = 10000
+    def __init__(
+        self,
+        input_column: str = "html",
+        output_column: str = "text",
+        timeout: int = 30,
+        extractor_type: str = "w3m",
+        width: int = 10000,
+        name: str = "ParseMath",
+    ):
+        self.input_column = input_column
+        self.output_column = output_column
+        self.timeout = timeout
+        self.extractor_type = extractor_type
+        self.width = width
+        self.name = name
 
-    name: str = "ParseMath"
+        if self.extractor_type == "lynx" and not shutil.which("lynx"):
+            raise RuntimeError("Lynx browser not found.")
 
-    if not shutil.which("lynx"):
-        raise RuntimeError("Lynx browser not found.")
-
-    if not shutil.which("w3m"):
-        raise RuntimeError("w3m browser not found.")
+        if self.extractor_type == "w3m" and not shutil.which("w3m"):
+            raise RuntimeError("w3m browser not found.")
 
     def __call__(self, df: DataFrame) -> DataFrame:
         df = df.with_column("cleaned_html", magic_parse(col(self.input_column)))
