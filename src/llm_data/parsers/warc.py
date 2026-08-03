@@ -49,7 +49,7 @@ def language_prediction(txt: str, model_path: str) -> str:
 class ExtractLanguage:
 
     def __init__(self,
-                 model_repo_id='cis-lmu/glotid',
+                 model_repo_id='cis-lmu/glotlid',
                  model_filename='model.bin'):
         self.model_path = hf_hub_download(repo_id=model_repo_id, 
                                           filename=model_filename)
