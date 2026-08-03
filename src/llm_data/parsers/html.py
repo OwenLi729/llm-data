@@ -9,7 +9,10 @@ from trafilatura import extract
 
 @daft.func
 def magic_parse(html: str) -> str:
-    return GeneralExtractor().extract(html)["html"]
+    try:
+        return GeneralExtractor().extract(html)["html"]
+    except:
+        return None
 
 
 @daft.func
@@ -32,7 +35,9 @@ class ParseHtml:
 
     def __call__(self, df: DataFrame) -> DataFrame:
         if self.parser_type == "resiliparse":
-            df = df.with_column("cleaned_html", magic_parse(col(self.input_column)))
+            df = (df.with_column("cleaned_html", magic_parse(col(self.input_column)))
+                  .drop_null("cleaned_html")
+                  )
             df = df.with_column(
                 self.output_column, resiliparse_extract(col("cleaned_html"))
             ).exclude("cleaned_html")
