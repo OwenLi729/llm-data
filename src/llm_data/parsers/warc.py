@@ -8,11 +8,6 @@ from daft import DataFrame, col
 from llm_data.utils import decode_html
 
 
-@daft.func
-def decode_warc_content(content: bytes) -> str:
-    return decode_html(content)
-
-
 @daft.cls
 class ExtractWarcLanguage:
     def __init__(self):
@@ -25,9 +20,6 @@ class ExtractWarcLanguage:
         except (AttributeError, KeyError, TypeError, ValueError):
             return None
 
-
-# Shared UDF handle for ExtractWarcLanguage. @daft.cls defers __init__ until
-# query execution, so import and reuse this instead of constructing new instances.
 extract_warc_language = ExtractWarcLanguage()
 
 
@@ -39,16 +31,14 @@ def select_warc_responses(df: DataFrame, limit: Optional[int] = None) -> DataFra
 
 
 @dataclass
-class NormalizeWarc:
+class ExtractWarc:
     limit: Optional[int] = None
 
-    name: str = "NormalizeWarc"
+    name: str = "ExtractWarc"
 
     def __call__(self, df: DataFrame) -> DataFrame:
-        # WARC files also contain requests and metadata records.
-        # Keep page responses, decode their payloads, and normalize their metadata.
         df = select_warc_responses(df, self.limit)
-        df = df.with_column("html", decode_warc_content(col("warc_content")))
+        df = df.with_column("html", decode_html(col("warc_content")))
         df = df.drop_null(col("html"))
         df = df.with_column("url", col("WARC-Target-URI"))
         df = df.with_column("record_id", col("WARC-Record-ID"))
