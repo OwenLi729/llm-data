@@ -21,12 +21,16 @@ class DataLoader:
             raise ValueError("Pass either `config` or `checkpoint_path`, not both")
 
         if checkpoint_path is not None and checkpoint_on is None:
-            raise ValueError("`checkpoint_on` is required when `checkpoint_path` is set")
- 
+            raise ValueError(
+                "`checkpoint_on` is required when `checkpoint_path` is set"
+            )
+
         self.loader_type = loader_type
         self.file_path_column_name = file_path_column_name
-        self.checkpoint_path = checkpoint_uri(checkpoint_path) if checkpoint_path else None
- 
+        self.checkpoint_path = (
+            checkpoint_uri(checkpoint_path) if checkpoint_path else None
+        )
+
         if self.checkpoint_path:
             config = CheckpointConfig(
                 store=CheckpointStore(self.checkpoint_path),

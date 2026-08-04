@@ -5,6 +5,7 @@ import daft
 from daft import DataType
 from resiliparse.parse.encoding import bytes_to_str, detect_encoding
 
+
 @daft.func
 def decode_html(html: bytes) -> str:
     """
