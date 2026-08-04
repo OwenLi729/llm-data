@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Optional
 
 from daft import DataFrame, col
@@ -67,20 +66,32 @@ def embedding_factory(
     return TextEmbedding().embed_batch
 
 
-@dataclass
 class EmbedText:
-    input_column: str = "text"
-    output_column: str = "text_embedding"
-    model_name: str = "lightonai/DenseOn"
-    batch_size: int = 32
-    embedding_dim: int = 768
-    max_seq_len: Optional[int] = None
-    normalize_embeddings: Optional[bool] = True
-    precision: str = "float32"
-    gpus: int | float = 1
-    cpus: Optional[float] = None
-
-    name: str = "EmbedText"
+    def __init__(
+        self,
+        input_column: str = "text",
+        output_column: str = "text_embedding",
+        model_name: str = "lightonai/DenseOn",
+        batch_size: int = 32,
+        embedding_dim: int = 768,
+        max_seq_len: Optional[int] = None,
+        normalize_embeddings: Optional[bool] = True,
+        precision: str = "float32",
+        gpus: int | float = 1,
+        cpus: Optional[float] = None,
+        name: str = "EmbedText",
+    ):
+        self.input_column = input_column
+        self.output_column = output_column
+        self.model_name = model_name
+        self.batch_size = batch_size
+        self.embedding_dim = embedding_dim
+        self.max_seq_len = max_seq_len
+        self.normalize_embeddings = normalize_embeddings
+        self.precision = precision
+        self.gpus = gpus
+        self.cpus = cpus
+        self.name = name
 
     def __post_init__(self):
         self.embed_batch = embedding_factory(

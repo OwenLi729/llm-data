@@ -4,7 +4,7 @@ from daft import DataFrame, col
 from huggingface_hub import hf_hub_download
 
 
-# Retruuns '__label__eng_Latn' for English
+# Returns '__label__eng_Latn' for English
 @daft.func
 def language_prediction(txt: str | None, model_path: str) -> str:
     if txt is None:

@@ -1,13 +1,16 @@
-from dataclasses import dataclass, field
+from dataclasses import field
 
 from daft import DataFrame
 
 
-@dataclass
 class DataEngine:
-    components: list = field(default_factory=list)
-
-    name: str = "DataEngine"
+    def __init__(
+        self,
+        components: list = field(default_factory=list),
+        name: str = "DataEngine",
+    ):
+        self.components = components
+        self.name = name
 
     def add(self, name):
         self.components.append(name)

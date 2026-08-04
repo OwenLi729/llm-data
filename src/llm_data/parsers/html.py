@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 import daft
 from daft import DataFrame, col
 from magic_html import GeneralExtractor
@@ -25,13 +23,18 @@ def resiliparse_extract(html: str) -> str:
     return extract_plain_text(html)
 
 
-@dataclass
 class ParseHtml:
-    input_column: str = "html"
-    output_column: str = "text"
-    parser_type: str = "resiliparse"
-
-    name: str = "ParseHtml"
+    def __init__(
+        self,
+        input_column: str = "html",
+        output_column: str = "text",
+        parser_type: str = "resiliparse",
+        name: str = "ParseHtml",
+    ):
+        self.input_column = input_column
+        self.output_column = output_column
+        self.parser_type = parser_type
+        self.name = name
 
     def __call__(self, df: DataFrame) -> DataFrame:
         if self.parser_type == "resiliparse":
