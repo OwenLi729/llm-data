@@ -1,9 +1,12 @@
 import argparse
 import json
 import os
+import py7zr
 import sys
 import time
 import urllib.request
+
+from pathlib import Path
 
 
 METADATA_URL_TMPL = "https://archive.org/metadata/{identifier}"
@@ -55,12 +58,12 @@ def download_file(identifier, fileinfo, out_dir, retries=3):
                         break
                     out.write(chunk)
             os.replace(tmp_dest, dest)
-            return (local_name, 'downloaded')
+            return (dest, 'downloaded')
         except:
             if os.path.exists(tmp_dest):
                 os.remove(tmp_dest)
             if attempt == retries:
-                return (local_name, "Failed")
+                return (dest, "Failed")
             time.sleep(5)
 
 
@@ -96,6 +99,14 @@ def main():
             successes += 1
 
     print(f"Done. Downloaded {successes}, Failed {failures}")
+
+
+def unzip_7z(archive_path: str) -> Path:
+    archive_path = Path(archive_path)
+    out_dir = archive_path.with_suffix("")
+    with py7zr.SevenZipFile(archive_path, mode="r") as z:
+        z.extractall(path=out_dir)
+    return out_dir
 
 
 if __name__ == "__main__":
