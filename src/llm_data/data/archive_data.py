@@ -3,12 +3,12 @@ import json
 import os
 import sys
 import time
-import urllib
+import urllib.request
 
 
 METADATA_URL_TMPL = "https://archive.org/metadata/{identifier}"
 DOWNLOAD_URL_TMPL = "https://archive.org/download/{identifier}/{path}"
-CHUNK_SIZE = 1024 * 1024
+CHUNK_SIZE = 1024 * 1024 * 1024 # Gigabyte
 
 
 def get_file_list(identifier):
@@ -22,7 +22,7 @@ def get_file_list(identifier):
         name = file.get("name", "")
         if name.lower().endswith(".7z"):
             # TODO Implement MD5 check on files
-            files.append({"name": name, "size": file.get("size", 0), "md5": file.get("md5")})
+            files.append({"name": name, "size": int(file.get("size", 0)), "md5": file.get("md5")})
     return files
 
 
@@ -37,7 +37,7 @@ def already_downloaded(dest, expected_size):
 
 def download_file(identifier, fileinfo, out_dir, retries=3):
     filename = fileinfo['name']
-    file_url = DOWNLOAD_URL_TMPL.format(identifier=identifier, filename=filename)
+    file_url = DOWNLOAD_URL_TMPL.format(identifier=identifier, path=filename)
     local_name = os.path.basename(filename)
     dest = os.path.join(out_dir, local_name)
     tmp_dest = dest + '.part'
