@@ -1,8 +1,5 @@
 from pathlib import Path
 from typing import Literal
-from ftfy import fix_text
-from magic_html import GeneralExtractor
-from resiliparse.extract.html2text import extract_plain_text
 import daft
 from daft import DataType
 from resiliparse.parse.encoding import bytes_to_str, detect_encoding
@@ -45,8 +42,3 @@ def daft_dtype(
     else:
         raise ValueError(f"Daft datatype not supported: {precision}")
     return daft_dtype
-
-@daft.func
-def to_text(html: str) -> str:
-    cleaned = GeneralExtractor().extract(html)["html"]
-    return fix_text(extract_plain_text(cleaned) or "")
