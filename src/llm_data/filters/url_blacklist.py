@@ -4,12 +4,9 @@ from daft import DataFrame, col
 from datasets import load_dataset
 from urllib.parse import urlparse
 
-# Default source: https://huggingface.co/datasets/TeraflopAI/url-blacklist
-DEFAULT_BLACKLIST_REPO_ID = "TeraflopAI/url-blacklist"
-DEFAULT_BLACKLIST_SPLIT = "train"
-DEFAULT_BLACKLIST_COLUMN_NAME = "url_blacklist"
- 
+from llm_data.config import DEFAULT_BLACKLIST_REPO_ID, DEFAULT_BLACKLIST_SPLIT, DEFAULT_BLACKLIST_COLUMN_NAME
 
+ 
 def _parse_netloc_for_host(netloc):
     # Parses user:pass@host or host:port into host
     return netloc.rsplit("@", 1)[-1].split(":", 1)[0].strip().lower().rstrip('/')
