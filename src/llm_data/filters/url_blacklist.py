@@ -82,7 +82,6 @@ class URLBlacklistFilter:
                 repo_id=blacklist_repo_id, split=blacklist_split, column=blacklist_column
             )
 
-
     def __call__(self, df: DataFrame) -> DataFrame:
         df = df.with_column("_domain", extract_domain(col(self.input_column)))
         df = df.where(~is_blacklisted_domain(col("_domain"), self.blacklist))
