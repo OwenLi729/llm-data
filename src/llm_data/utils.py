@@ -1,6 +1,5 @@
 from pathlib import Path
 from typing import Literal
-
 import daft
 from daft import DataType
 from resiliparse.parse.encoding import bytes_to_str, detect_encoding
