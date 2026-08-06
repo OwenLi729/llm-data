@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Literal
 import daft
@@ -42,4 +43,17 @@ def daft_dtype(
         daft_dtype = DataType.int8()
     else:
         raise ValueError(f"Daft datatype not supported: {precision}")
+    return daft_dtype
+
+
+def get_filepaths(directory, extension=".parquet"):
+    file_paths = []
+    for root, _, files in os.walk(directory):
+        for filename in files:
+            if filename.endswith(extension):
+                file_paths.append(os.path.join(root, filename))
+    return sorted(file_paths)
+
+def load_personas(_DATASET_ID) -> daft.DataFrame:
+    return daft.read_huggingface(_DATASET_ID)
     return daft_dtype
