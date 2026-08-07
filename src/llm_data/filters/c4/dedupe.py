@@ -6,18 +6,31 @@ occurred in an earlier document). This is simpler to express as a
 distributed dataframe op and has the same boilerplate-removal effect
 in practice.
 """
-import re
+import re2
 
 import daft
 from daft import Window, col
 
-_SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+")
+# re2 has no lookbehind, so split on the boundary itself and keep the
+# punctuation attached to the preceding sentence.
+_SENTENCE_BOUNDARY = re2.compile(r"[.!?]+\s+")
+
+
+def _split_sentences(text: str) -> list[str]:
+    sentences, start = [], 0
+    for m in _SENTENCE_BOUNDARY.finditer(text):
+        sentences.append(text[start : m.end()].strip())
+        start = m.end()
+    tail = text[start:].strip()
+    if tail:
+        sentences.append(tail)
+    return sentences
 
 
 @daft.func
 def spans(text: str) -> list[str]:
     """Non-overlapping 3-sentence chunks of `text`."""
-    sentences = _SENTENCE_SPLIT.split(text.strip())
+    sentences = _split_sentences(text.strip())
     chunks = [" ".join(sentences[i : i + 3]) for i in range(0, len(sentences), 3)]
     return chunks or [text]
 
