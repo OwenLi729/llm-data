@@ -1,14 +1,12 @@
 import daft
 from daft import col
 
-from .badwords import load_badwords, make_badwords_filter
+from .badwords import load_badwords, has_badword
 from .dedupe import dedupe
 from .page_rules import clean_page, has_curly_brace, has_lorem_ipsum
 
 
 def filter_c4(df: daft.DataFrame, doc_id: str = "doc_id", text: str = "text") -> daft.DataFrame:
-    has_badword = make_badwords_filter(load_badwords())
-
     # Dedup implemented because it's not a hash-based dedupe
     df = (
         df.with_column(text, clean_page(col(text)))
