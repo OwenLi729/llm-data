@@ -17,8 +17,6 @@ class PresidioMasker:
 
     @daft.method
     def mask_text(self, text: str) -> str:
-        if not text:
-            return text
         results = self.analyzer.analyze(text=text, language=self.language)
         anonymized = self.anonymizer.anonymize(text=text, analyzer_results=results)
         return anonymized.text
