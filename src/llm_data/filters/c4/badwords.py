@@ -2,7 +2,7 @@ import daft
 import requests
 
 from daft import DataFrame, col
-from llm_data.config import BAD_WORDS_URL
+from ...config import BAD_WORDS_URL
 
 
 @daft.func
