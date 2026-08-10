@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from typing import Literal
+
 import daft
 from daft import DataType
 from resiliparse.parse.encoding import bytes_to_str, detect_encoding
@@ -53,6 +54,7 @@ def get_filepaths(directory, extension=".parquet"):
             if filename.endswith(extension):
                 file_paths.append(os.path.join(root, filename))
     return sorted(file_paths)
+
 
 def load_personas(_DATASET_ID) -> daft.DataFrame:
     return daft.read_huggingface(_DATASET_ID)

@@ -1,17 +1,24 @@
 """Page-level C4 heuristics, exposed as Daft row-wise UDFs."""
-import daft
 
+import daft
 from daft import DataFrame, col
-from .line_rules import _ends_with_terminal_punctuation, _has_min_words, _mentions_javascript
+
 from ...config import C4_MIN_SENTENCES
+from .line_rules import (
+    _ends_with_terminal_punctuation,
+    _has_min_words,
+    _mentions_javascript,
+)
 
 
 @daft.func
-def clean_page(text: str,
-               min_word_flag: bool,
-               terminal_punctuation_flag: bool,
-               javascript_flag: bool,
-               min_line_flag: bool) -> str | None:
+def clean_page(
+    text: str,
+    min_word_flag: bool,
+    terminal_punctuation_flag: bool,
+    javascript_flag: bool,
+    min_line_flag: bool,
+) -> str | None:
     """Keep only lines passing the line-level rules; drop the page if too short."""
     kept = []
     for line in text.splitlines():
@@ -41,7 +48,6 @@ def has_curly_brace(text: str) -> bool:
 
 
 class C4PageFilter:
-
     def __init__(
         self,
         input_column: str = "text",
@@ -67,13 +73,14 @@ class C4PageFilter:
             df = df.where(~has_lorem_ipsum(col(self.input_column)))
         if self.curly_brace_filter:
             df = df.where(~has_curly_brace(col(self.input_column)))
-        df = (
-            df.with_column(self.input_column, 
-                           clean_page(col(self.input_column), 
-                                      self.line_min_word_filter, 
-                                      self.line_terminal_punctuation_filter, 
-                                      self.line_terminal_punctuation_filter, 
-                                      self.page_min_line_filter))
-              .drop_null(self.input_column)
-            )
+        df = df.with_column(
+            self.input_column,
+            clean_page(
+                col(self.input_column),
+                self.line_min_word_filter,
+                self.line_terminal_punctuation_filter,
+                self.line_terminal_punctuation_filter,
+                self.page_min_line_filter,
+            ),
+        ).drop_null(self.input_column)
         return df

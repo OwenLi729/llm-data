@@ -1,21 +1,25 @@
-import daft
-
-from daft import DataFrame, col
-from datasets import load_dataset
 from urllib.parse import urlparse
 
-from llm_data.config import DEFAULT_BLACKLIST_REPO_ID, DEFAULT_BLACKLIST_SPLIT, DEFAULT_BLACKLIST_COLUMN_NAME
+import daft
+from daft import DataFrame, col
+from datasets import load_dataset
 
- 
+from llm_data.config import (
+    DEFAULT_BLACKLIST_COLUMN_NAME,
+    DEFAULT_BLACKLIST_REPO_ID,
+    DEFAULT_BLACKLIST_SPLIT,
+)
+
+
 def _parse_netloc_for_host(netloc):
     # Parses user:pass@host or host:port into host
-    return netloc.rsplit("@", 1)[-1].split(":", 1)[0].strip().lower().rstrip('/')
+    return netloc.rsplit("@", 1)[-1].split(":", 1)[0].strip().lower().rstrip("/")
 
 
 def _download_default_blacklist(
     repo_id: str = DEFAULT_BLACKLIST_REPO_ID,
     split: str = DEFAULT_BLACKLIST_SPLIT,
-    column: str = DEFAULT_BLACKLIST_COLUMN_NAME
+    column: str = DEFAULT_BLACKLIST_COLUMN_NAME,
 ) -> frozenset[str]:
     ds = load_dataset(repo_id, split=split)
     domains = set()
@@ -58,7 +62,6 @@ def is_blacklisted_domain(domain: str, blacklist: frozenset) -> bool:
 
 
 class URLBlacklistFilter:
-
     def __init__(
         self,
         input_column: str = "url",
@@ -76,7 +79,9 @@ class URLBlacklistFilter:
             self.blacklist = frozenset(d.lower().strip().rstrip("/") for d in domains)
         else:
             self.blacklist = _download_default_blacklist(
-                repo_id=blacklist_repo_id, split=blacklist_split, column=blacklist_column
+                repo_id=blacklist_repo_id,
+                split=blacklist_split,
+                column=blacklist_column,
             )
 
     def __call__(self, df: DataFrame) -> DataFrame:

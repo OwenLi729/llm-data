@@ -1,7 +1,7 @@
 import daft
 import requests
-
 from daft import DataFrame, col
+
 from ...config import BAD_WORDS_URL
 
 
@@ -17,17 +17,16 @@ def load_badwords(url: str = BAD_WORDS_URL) -> frozenset[str]:
 
 
 class BadWordsFilter:
-
     def __init__(
         self,
         input_column: str = "text",
         badwords: set[str] | None = None,
-        badwords_url: str =BAD_WORDS_URL,
+        badwords_url: str = BAD_WORDS_URL,
         name: str = "BadWordsFilter",
     ):
         self.input_column = input_column
         self.name = name
-    
+
         if badwords is not None:
             self.badwords = badwords
         else:

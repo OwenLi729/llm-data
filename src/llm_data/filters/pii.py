@@ -1,5 +1,4 @@
 import daft
-
 from daft import DataFrame, col
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
@@ -7,8 +6,7 @@ from presidio_anonymizer import AnonymizerEngine
 
 @daft.cls
 class PresidioMasker:
-    def __init__(self,
-                 language: str = 'en'):
+    def __init__(self, language: str = "en"):
         # Initialized once per worker process
         self.analyzer = AnalyzerEngine()
         self.anonymizer = AnonymizerEngine()
@@ -23,11 +21,10 @@ class PresidioMasker:
 
 
 class PIIAnonymizer:
-
     def __init__(
         self,
         input_column: str = "text",
-        language: str = 'en',
+        language: str = "en",
         name: str = "PIIAnonymizer",
     ):
         self.input_column = input_column
@@ -37,5 +34,7 @@ class PIIAnonymizer:
         self.masker = PresidioMasker(language=language)
 
     def __call__(self, df: DataFrame) -> DataFrame:
-        df = df.with_column(self.input_column, self.masker.mask_text(col(self.input_column)))
+        df = df.with_column(
+            self.input_column, self.masker.mask_text(col(self.input_column))
+        )
         return df
