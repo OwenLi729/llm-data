@@ -35,7 +35,7 @@ def spans(text: str) -> list[str]:
     return chunks or [text]
 
 
-def dedupe(df: daft.DataFrame, doc_id: str = "record_id", text: str = "text") -> daft.DataFrame:
+def dedupe_3_sentences(df: daft.DataFrame, doc_id: str = "record_id", text: str = "text") -> daft.DataFrame:
     """Drop documents whose 3-sentence spans have all appeared in an earlier document."""
     exploded = df.select(doc_id, text).with_column("span", spans(col(text))).explode("span")
     window = Window().partition_by("span").order_by(doc_id)
