@@ -8,7 +8,7 @@
 #SBATCH --exclusive
 #SBATCH --time=12:00:00
 #SBATCH --job-name=daft-qwen38-27b
-#SBATCH --array=0-137
+#SBATCH --array=0
 #SBATCH --output=/e/project1/reformo/enrico/qwen-sglang/logs/%x_%A_%a.out
 
 set -euo pipefail

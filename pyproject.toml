@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "daft[openai,ray]>=0.7.16",
-    "fasttext>=0.9.3",
+    "fastertext>=0.1.1",
     "ftfy>=6.3.1",
     "google-re2>=1.1.20251105",
     "kernels<0.15",
@@ -20,6 +20,7 @@ dependencies = [
     "sentence-transformers>=5.6.0",
     "text-dedup>=0.4.1",
     "trafilatura>=2.1.0",
+    "usearch>=2.26.0",
     "vllm>=0.26.0",
 ]
 
