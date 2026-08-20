@@ -85,5 +85,5 @@ def generate_queries(
         lambda content: orjson.loads(content)["query"],
         return_dtype=daft.DataType.string(),
     )
-    
+
     return query.alias("query"), document.alias("document")

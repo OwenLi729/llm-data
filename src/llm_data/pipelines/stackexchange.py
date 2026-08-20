@@ -80,15 +80,10 @@ def process_site(
         .with_column(
             "text",
             to_text(
-                daft.lit("<html><body>")
-                + col("body")
-                + daft.lit("</body></html>")
+                daft.lit("<html><body>") + col("body") + daft.lit("</body></html>")
             ),
         )
-        .where(
-            (length(col("text")) > min_length)
-            & (length(col("text")) < max_length)
-        )
+        .where((length(col("text")) > min_length) & (length(col("text")) < max_length))
         .select(*_POST_COLUMNS)
     )
 
@@ -108,14 +103,13 @@ def qa_pairs(output_path: str | Path, min_score: int = 5) -> None:
         raise RuntimeError(f"No Parquet shards found in {output_path}")
     df = daft.read_parquet([str(path) for path in parquet_paths])
 
-    questions = (
-        df.where((col("post_type_id") == 1) & (col("score") >= min_score))
-        .select(
-            col("id").alias("question_id"),
-            col("title").alias("question_title"),
-            col("text").alias("question_text"),
-            "accepted_answer_id",
-        )
+    questions = df.where(
+        (col("post_type_id") == 1) & (col("score") >= min_score)
+    ).select(
+        col("id").alias("question_id"),
+        col("title").alias("question_title"),
+        col("text").alias("question_text"),
+        "accepted_answer_id",
     )
     answers = df.where(col("post_type_id") == 2).select(
         col("id").alias("answer_id"),

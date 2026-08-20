@@ -83,26 +83,16 @@ class EmbedText:
     ):
         self.input_column = input_column
         self.output_column = output_column
-        self.model_name = model_name
-        self.batch_size = batch_size
-        self.embedding_dim = embedding_dim
-        self.max_seq_len = max_seq_len
-        self.normalize_embeddings = normalize_embeddings
-        self.precision = precision
-        self.gpus = gpus
-        self.cpus = cpus
         self.name = name
-
-    def __post_init__(self):
         self.embed_batch = embedding_factory(
-            model_name=self.model_name,
-            batch_size=self.batch_size,
-            embedding_dim=self.embedding_dim,
-            max_seq_len=self.max_seq_len,
-            normalize_embeddings=self.normalize_embeddings,
-            precision=self.precision,
-            gpus=self.gpus,
-            cpus=self.cpus,
+            model_name=model_name,
+            batch_size=batch_size,
+            embedding_dim=embedding_dim,
+            max_seq_len=max_seq_len,
+            normalize_embeddings=normalize_embeddings,
+            precision=precision,
+            gpus=gpus,
+            cpus=cpus,
         )
 
     def __call__(self, df: DataFrame) -> DataFrame:

@@ -1,33 +1,29 @@
 import daft
-import fasttext
-from daft import DataFrame, col
+from daft import DataFrame, col, functions as F
+from fastertext import load_model
 from huggingface_hub import hf_hub_download
 
 
-# Returns '__label__eng_Latn' for English
-@daft.func
-def language_prediction(txt: str | None, model_path: str) -> str:
-    if txt is None:
-        return ""
+@daft.cls
+class LanguagePredictor:
+    def __init__(self, model_path: str):
+        self.model = load_model(model_path)
+        self.id2label = self.model.get_labels()
 
-    model = fasttext.load_model(model_path)
-    one_line = " ".join(txt.splitlines()).strip()
+    @daft.method.batch(return_dtype=daft.DataType.string())
+    def predict(self, texts: daft.Series) -> list[str]:
+        labels, probs = self.model.batch(texts.to_pylist(), k=1)
+        return [
+            self.id2label[int(l)] if p > 0 else ""
+            for l, p in zip(labels[:, 0], probs[:, 0])
+        ]
 
-    if len(one_line) == 0:
-        return ""
 
-    return model.predict([one_line], k=1)[0][0][0]
-
-
-# Language extraction with glotlid
 class ExtractLanguage:
-    def __init__(self, model_repo_id="cis-lmu/glotlid", model_filename="model.bin"):
-        self.model_path = hf_hub_download(
-            repo_id=model_repo_id, filename=model_filename
-        )
+    def __init__(self, model_repo_id="cis-lmu/glotlid", model_filename="model_v3.bin"):
+        model_path = hf_hub_download(repo_id=model_repo_id, filename=model_filename)
+        self.predictor = LanguagePredictor(model_path)
 
     def __call__(self, df: DataFrame) -> DataFrame:
-        df = df.with_column(
-            "language", language_prediction(col("text"), self.model_path)
-        )
-        return df
+        cleaned = F.strip(F.regexp_replace(col("text"), r"[\r\n]+", " "))
+        return df.with_column("language", self.predictor.predict(cleaned))
